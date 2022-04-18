@@ -3,7 +3,7 @@ package io.github.samkelsey.wordzle.controller;
 import io.github.samkelsey.wordzle.TestUtils;
 import io.github.samkelsey.wordzle.dto.RequestDto;
 import io.github.samkelsey.wordzle.dto.ResponseDto;
-import io.github.samkelsey.wordzle.schedule.ResetTargetWordTask;
+import io.github.samkelsey.wordzle.schedule.ResetTargetColourTask;
 import io.github.samkelsey.wordzle.service.GuessService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class MainControllerLayerTest {
 
     @MockBean
-    private ResetTargetWordTask resetTargetWordTask;
+    private ResetTargetColourTask resetTargetWordTask;
 
     @MockBean
     private GuessService guessService;
@@ -39,7 +39,7 @@ public class MainControllerLayerTest {
         when(guessService.makeGuess(any(), any())).thenReturn(TestUtils.jFixture.create(ResponseDto.class));
         MvcResult response = mockMvc.perform(
                 post("/submitGuess")
-                        .content(TestUtils.asJsonString(new RequestDto("testG")))
+                        .content(TestUtils.asJsonString(new RequestDto(1, 2, 3)))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
 
@@ -51,7 +51,7 @@ public class MainControllerLayerTest {
     void whenInvalidRequest_shouldReturn400() throws Exception {
         MvcResult response = mockMvc.perform(
                 post("/submitGuess")
-                        .content("{\"obj\":\"fail\"}")
+                        .content("{\"bj\":\"fail\"}")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
 

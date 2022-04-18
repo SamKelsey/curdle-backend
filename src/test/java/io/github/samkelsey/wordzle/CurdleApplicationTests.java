@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import redis.embedded.RedisServer;
 
 @SpringBootTest
-class WordzleApplicationTests {
+class CurdleApplicationTests {
 
 	private static final RedisServer redisServer = new RedisServer();
 

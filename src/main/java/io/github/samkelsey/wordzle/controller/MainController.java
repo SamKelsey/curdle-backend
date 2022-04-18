@@ -3,7 +3,7 @@ package io.github.samkelsey.wordzle.controller;
 import io.github.samkelsey.wordzle.dto.RequestDto;
 import io.github.samkelsey.wordzle.dto.ResponseDto;
 import io.github.samkelsey.wordzle.model.UserData;
-import io.github.samkelsey.wordzle.schedule.ResetTargetWordTask;
+import io.github.samkelsey.wordzle.schedule.ResetTargetColourTask;
 import io.github.samkelsey.wordzle.service.GuessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +21,13 @@ import javax.validation.Valid;
 public class MainController {
 
     private final GuessService guessService;
-    private final ResetTargetWordTask resetTargetWordTask;
+    private final ResetTargetColourTask resetTargetColourTask;
     private final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
     private final String SESSION_ATTRIBUTE = "USER_DATA";
 
-    public MainController(GuessService guessService, ResetTargetWordTask resetTargetWordTask) {
+    public MainController(GuessService guessService, ResetTargetColourTask resetTargetColourTask) {
         this.guessService = guessService;
-        this.resetTargetWordTask = resetTargetWordTask;
+        this.resetTargetColourTask = resetTargetColourTask;
     }
 
     @GetMapping("/getStats")
@@ -38,7 +38,7 @@ public class MainController {
 
     @PostMapping(value = "/submitGuess")
     public ResponseEntity<ResponseDto> submitGuess(@RequestBody @Valid RequestDto dto, HttpServletRequest request) {
-        LOGGER.info("Processing request for a guess of: {}", dto.getGuess());
+        LOGGER.info("Processing request for a guess of: {}", dto.toString());
         UserData userData = getUserData(request);
         ResponseDto response = guessService.makeGuess(userData, dto);
         setUserData(request.getSession(), UserData.fromResponseDto(response));
@@ -63,7 +63,7 @@ public class MainController {
     private HttpSession getSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
 
-        if (session.getCreationTime() < resetTargetWordTask.getTargetWordCreationTime()) {
+        if (session.getCreationTime() < resetTargetColourTask.getTargetColourCreationTime()) {
             session.invalidate();
             session = request.getSession();
         }

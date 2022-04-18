@@ -1,7 +1,7 @@
 package io.github.samkelsey.wordzle.controller;
 
 import io.github.samkelsey.wordzle.dto.ResponseDto;
-import io.github.samkelsey.wordzle.schedule.ResetTargetWordTask;
+import io.github.samkelsey.wordzle.schedule.ResetTargetColourTask;
 import io.github.samkelsey.wordzle.service.GuessService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 public class MainControllerTest {
 
     @Mock
-    private ResetTargetWordTask resetTargetWordTask;
+    private ResetTargetColourTask resetTargetWordTask;
 
     @Mock
     private GuessService guessService;
@@ -41,7 +41,7 @@ public class MainControllerTest {
         HttpSession sessionMock = mock(HttpSession.class);
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getCreationTime()).thenReturn(10L);
-        when(resetTargetWordTask.getTargetWordCreationTime()).thenReturn(20L);
+        when(resetTargetWordTask.getTargetColourCreationTime()).thenReturn(20L);
 
         mainController.getStats(requestMock);
 
@@ -54,7 +54,7 @@ public class MainControllerTest {
         HttpSession sessionMock = mock(HttpSession.class);
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getCreationTime()).thenReturn(20L);
-        when(resetTargetWordTask.getTargetWordCreationTime()).thenReturn(10L);
+        when(resetTargetWordTask.getTargetColourCreationTime()).thenReturn(10L);
 
         ResponseDto res = mainController.getStats(requestMock).getBody();
 
@@ -69,7 +69,7 @@ public class MainControllerTest {
         HttpSession sessionMock = mock(HttpSession.class);
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getCreationTime()).thenReturn(20L);
-        when(resetTargetWordTask.getTargetWordCreationTime()).thenReturn(10L);
+        when(resetTargetWordTask.getTargetColourCreationTime()).thenReturn(10L);
 
         mainController.getStats(requestMock);
 

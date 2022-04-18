@@ -4,13 +4,10 @@ import io.github.samkelsey.wordzle.model.Guess;
 import io.github.samkelsey.wordzle.model.UserData;
 import io.github.samkelsey.wordzle.dto.RequestDto;
 import io.github.samkelsey.wordzle.dto.ResponseDto;
-import io.github.samkelsey.wordzle.schedule.ResetTargetWordTask;
+import io.github.samkelsey.wordzle.schedule.ResetTargetColourTask;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.*;
 
 import static io.github.samkelsey.wordzle.model.GameStatus.LOST;
 import static io.github.samkelsey.wordzle.model.GameStatus.WON;
@@ -18,10 +15,10 @@ import static io.github.samkelsey.wordzle.model.GameStatus.WON;
 @Service
 public class GuessService {
 
-    private final ResetTargetWordTask resetTargetWordTask;
+    private final ResetTargetColourTask resetTargetColourTask;
 
-    public GuessService(ResetTargetWordTask resetTargetWordTask) {
-        this.resetTargetWordTask = resetTargetWordTask;
+    public GuessService(ResetTargetColourTask resetTargetColourTask) {
+        this.resetTargetColourTask = resetTargetColourTask;
     }
 
     public ResponseDto makeGuess(UserData userData, RequestDto dto) {
@@ -30,75 +27,53 @@ public class GuessService {
             return new ResponseDto(userData);
         }
 
-        Guess guessResult = evaluateGuess(dto.getGuess());
+        Guess guessResult = evaluateGuess(dto);
 
         userData.setLives(userData.getLives() - 1);
         userData.getGuesses().add(guessResult);
-        updateDiscoveredLetters(userData, guessResult);
 
-        if (dto.getGuess().equals(resetTargetWordTask.getTargetWord())) {
+        if (isCorrectGuess(guessResult)) {
             userData.setGameStatus(WON);
         } else if (userData.getLives() <= 0) {
             userData.setGameStatus(LOST);
         }
 
         return new ResponseDto(
-                dto.getGuess().equals(resetTargetWordTask.getTargetWord()),
+                isCorrectGuess(guessResult),
                 userData
         );
     }
 
-    private void updateDiscoveredLetters(UserData userData, Guess guessResult) {
-        appendUniqueLetters(
-                userData.getDiscoveredLetters().getCorrect(),
-                guessResult.getCorrectAsChars()
-        );
-        appendUniqueLetters(
-                userData.getDiscoveredLetters().getExists(),
-                guessResult.getExistsAsChars()
-        );
-        appendUniqueLetters(
-                userData.getDiscoveredLetters().getIncorrect(),
-                guessResult.getIncorrectAsChars()
-        );
-    }
+    private Guess evaluateGuess(RequestDto dto) {
+        Color color = new Color(dto.getRed(), dto.getGreen(), dto.getBlue());
+        Color targetColor = resetTargetColourTask.getTargetColour();
 
-    private void appendUniqueLetters(List<Character> initialLetters, List<Character> newLetters) {
-        for (char c : newLetters) {
-            if (!initialLetters.contains(c)) {
-                initialLetters.add(c);
-            }
-        }
+        /*
+
+        Distance Formula: ((r2 - r1)^2 + (g2 - g1)^2 + (b2 - b1)^2)^1/2
+
+        int distance = (int) Math.sqrt(
+               Math.pow(color.getRed() - targetColor.getRed(), 2) +
+               Math.pow(color.getGreen() - targetColor.getGreen(), 2) +
+               Math.pow(color.getBlue() - targetColor.getBlue(), 2));
+
+        */
+
+        /*  Percentage difference = (((r2 - r1)/255 + (g2 - g1)/255 + (b2 - b1))/255)/3 * 100   */
+        float diffRed = Math.abs(color.getRed() - targetColor.getRed()) / 255f;
+        float diffGreen = Math.abs(color.getGreen() - targetColor.getGreen()) / 255f;
+        float diffBlue = Math.abs(color.getBlue() - targetColor.getBlue()) / 255f;
+        float avgDiff = ((diffRed + diffGreen + diffBlue) / 3) * 100f;
+
+
+        return new Guess(color, Math.round(avgDiff));
     }
 
     private boolean isGameOver(UserData userData) {
         return userData.getGameStatus() == LOST || userData.getGameStatus() == WON;
     }
 
-    private Guess evaluateGuess(String s) {
-        char[] target = resetTargetWordTask.getTargetWord().toCharArray();
-        char[] guess = s.toCharArray();
-
-        List<Integer> correct = new ArrayList<>();
-        List<Integer> incorrect = new ArrayList<>();
-        List<Integer> exists = new ArrayList<>();
-
-        for (int i = 0; i < target.length; i++) {
-            if (target[i] == guess[i]) {
-                correct.add(i);
-            } else {
-                for (char c : target) {
-                    if (guess[i] == c && !exists.contains(i)) {
-                        exists.add(i);
-                    }
-                }
-            }
-
-            if (!correct.contains(i) && !exists.contains(i)) {
-                incorrect.add(i);
-            }
-        }
-
-        return new Guess(s, correct, incorrect, exists);
+    private boolean isCorrectGuess(Guess guess) {
+        return guess.getAccuracy() < 10;
     }
 }

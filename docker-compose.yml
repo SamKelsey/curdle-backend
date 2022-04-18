@@ -3,10 +3,12 @@ services:
     build: .
     depends_on:
       - "redis"
-  client:
-    build: ../client/
+#  client:
+#    build: ../client/
   redis:
     image: "redis:latest"
+    ports:
+      - "6379:6379"
   nginx:
     build: ./nginx/
     ports:

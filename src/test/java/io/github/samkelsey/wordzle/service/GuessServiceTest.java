@@ -6,7 +6,7 @@ import io.github.samkelsey.wordzle.model.Guess;
 import io.github.samkelsey.wordzle.model.UserData;
 import io.github.samkelsey.wordzle.dto.RequestDto;
 import io.github.samkelsey.wordzle.dto.ResponseDto;
-import io.github.samkelsey.wordzle.schedule.ResetTargetWordTask;
+import io.github.samkelsey.wordzle.schedule.ResetTargetColourTask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,22 +16,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.servlet.http.HttpSession;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static io.github.samkelsey.wordzle.model.GameStatus.LOST;
-import static io.github.samkelsey.wordzle.model.GameStatus.PLAYING;
 import static io.github.samkelsey.wordzle.model.GameStatus.WON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +36,7 @@ import static org.mockito.Mockito.when;
 public class GuessServiceTest {
 
     @Mock
-    private ResetTargetWordTask resetTargetWordTask;
+    private ResetTargetColourTask resetTargetWordTask;
 
     @InjectMocks
     private GuessService guessService;
@@ -55,7 +52,7 @@ public class GuessServiceTest {
 
     @Test
     void whenCorrectGuess_shouldGameOver() {
-        when(resetTargetWordTask.getTargetWord()).thenReturn(dto.getGuess());
+        when(resetTargetWordTask.getTargetColour()).thenReturn(new Color(dto.getRed(), dto.getGreen(), dto.getGreen()));
 
         ResponseDto responseDto = guessService.makeGuess(userData, dto);
 
@@ -64,7 +61,7 @@ public class GuessServiceTest {
 
     @Test
     void whenMakeGuess_shouldDeductLife() {
-        when(resetTargetWordTask.getTargetWord()).thenReturn("foo");
+        when(resetTargetWordTask.getTargetColour()).thenReturn(new Color(dto.getRed(), dto.getGreen(), dto.getGreen()));
         int initialLives = userData.getLives();
 
         int lives = guessService.makeGuess(userData, dto).getLives();
@@ -74,38 +71,36 @@ public class GuessServiceTest {
 
     @Test
     void whenMakeGuess_shouldEvaluateGuess() {
-        RequestDto dto = new RequestDto("motfs");
-        when(resetTargetWordTask.getTargetWord()).thenReturn("forks");
+        RequestDto dto = new RequestDto(245, 250, 255);
+        when(resetTargetWordTask.getTargetColour()).thenReturn(new Color(255, 255, 255));
 
         List<Guess> guesses = guessService.makeGuess(userData, dto).getGuesses();
 
         Guess result = guesses.get(guesses.size() - 1);
         Guess expected = new Guess(
-                "motfs",
-                Arrays.asList(1, 4),
-                Arrays.asList(0, 2),
-                Arrays.asList(3)
+                new Color(245, 250, 255),
+                2
         );
         assertEquals(expected.getGuess(), result.getGuess());
-        assertEquals(expected.getExists(), result.getExists());
-        assertEquals(expected.getCorrect(), result.getCorrect());
+        assertEquals(expected.getAccuracy(), result.getAccuracy());
     }
 
     @Test
     void whenMakeGuess_shouldAddGuess() {
-        when(resetTargetWordTask.getTargetWord()).thenReturn(dto.getGuess());
+        Color guessColor = new Color(dto.getRed(), dto.getGreen(), dto.getBlue());
+        when(resetTargetWordTask.getTargetColour()).thenReturn(guessColor);
         List<Guess> initialGuesses = new ArrayList<>(userData.getGuesses());
 
         List<Guess> guesses = guessService.makeGuess(userData, dto).getGuesses();
 
         assertEquals(initialGuesses.size() + 1, guesses.size());
-        assertEquals(dto.getGuess(), guesses.get(guesses.size() - 1).getGuess());
+        assertEquals(guessColor, guesses.get(guesses.size() - 1).getGuess());
     }
 
     @Test
     void whenOutOfLives_shouldGameOver() {
         userData.setLives(0);
-        when(resetTargetWordTask.getTargetWord()).thenReturn("foo");
+        when(resetTargetWordTask.getTargetColour()).thenReturn(new Color(14, 52, 12));
 
         ResponseDto response = guessService.makeGuess(userData, dto);
 

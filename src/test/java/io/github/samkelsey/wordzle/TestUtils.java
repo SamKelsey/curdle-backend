@@ -7,6 +7,7 @@ import io.github.samkelsey.wordzle.model.Guess;
 import io.github.samkelsey.wordzle.model.UserData;
 import io.github.samkelsey.wordzle.dto.RequestDto;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class TestUtils {
     }
 
     public static RequestDto createSampleRequestDto() {
-        return new RequestDto("parrot");
+        return new RequestDto(0, 0, 0);
     }
 
     public static String asJsonString(final Object obj) {

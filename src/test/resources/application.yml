@@ -2,8 +2,8 @@ spring:
   session:
     store-type: redis
   redis:
-    host: host.docker.internal # set to 'redis' when running as a container.
+    host: localhost # localhost for embedded redis server in tests.
     database: 0
     port: 6379
 reset-word-task:
-  delay: 300000
+  delay: 30000
