@@ -66,7 +66,7 @@ public class GuessService {
         float avgDiff = ((diffRed + diffGreen + diffBlue) / 3) * 100f;
 
 
-        return new Guess(color, Math.round(avgDiff));
+        return new Guess(color, Math.round(100 - avgDiff));
     }
 
     private boolean isGameOver(UserData userData) {
@@ -74,6 +74,6 @@ public class GuessService {
     }
 
     private boolean isCorrectGuess(Guess guess) {
-        return guess.getAccuracy() < 10;
+        return guess.getAccuracy() > 90;
     }
 }

@@ -23,7 +23,7 @@ public class ResetTargetColourTask {
         LOGGER.info("Resetting word");
         targetColour = createRandColour();
         targetColourCreationTime = Instant.now().toEpochMilli();
-        LOGGER.info("Target word reset to \"{}\"", targetColour);
+        LOGGER.info("Target colour reset to \"{}\"", targetColour);
     }
 
     private Color createRandColour() {
@@ -31,7 +31,7 @@ public class ResetTargetColourTask {
         int g = rand.nextInt(255);
         int b = rand.nextInt(255);
 
-        return new Color(r, g, b);
+        return new Color(200, 200, 200);
     }
 
     public Color getTargetColour() {

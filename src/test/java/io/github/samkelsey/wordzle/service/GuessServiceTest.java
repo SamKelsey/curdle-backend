@@ -79,7 +79,7 @@ public class GuessServiceTest {
         Guess result = guesses.get(guesses.size() - 1);
         Guess expected = new Guess(
                 new Color(245, 250, 255),
-                2
+                98
         );
         assertEquals(expected.getGuess(), result.getGuess());
         assertEquals(expected.getAccuracy(), result.getAccuracy());
