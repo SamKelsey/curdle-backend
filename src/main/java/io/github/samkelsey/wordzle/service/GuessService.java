@@ -8,6 +8,7 @@ import io.github.samkelsey.wordzle.schedule.ResetTargetColourTask;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
+import java.util.Comparator;
 
 import static io.github.samkelsey.wordzle.model.GameStatus.LOST;
 import static io.github.samkelsey.wordzle.model.GameStatus.WON;
@@ -31,6 +32,10 @@ public class GuessService {
 
         userData.setLives(userData.getLives() - 1);
         userData.getGuesses().add(guessResult);
+        userData.setBestGuess(
+                userData.getGuesses().stream()
+                        .max(Comparator.comparingInt(Guess::getAccuracy)).get()
+        );
 
         if (isCorrectGuess(guessResult)) {
             userData.setGameStatus(WON);

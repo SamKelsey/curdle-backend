@@ -26,11 +26,15 @@ public class ResponseDto {
 
     private int lives;
 
+    @JsonProperty("best-guess")
+    private Guess bestGuess;
+
     public ResponseDto(UserData userData) {
         this.gameStatus = userData.getGameStatus();
         this.guessIsCorrect = null;
         this.guesses = userData.getGuesses();
         this.lives = userData.getLives();
+        this.bestGuess = userData.getBestGuess();
     }
 
     public ResponseDto(boolean guessIsCorrect, UserData userData) {
@@ -38,5 +42,6 @@ public class ResponseDto {
         this.guessIsCorrect = guessIsCorrect;
         this.guesses = userData.getGuesses();
         this.lives = userData.getLives();
+        this.bestGuess = userData.getBestGuess();
     }
 }

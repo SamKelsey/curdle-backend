@@ -2,7 +2,7 @@ spring:
   session:
     store-type: redis
   redis:
-    host: host.docker.internal # set to 'redis' when running as a container.
+    host: localhost # set to 'redis' or 'host.docker.internal' when running as a container.
     database: 0
     port: 6379
 reset-word-task:
