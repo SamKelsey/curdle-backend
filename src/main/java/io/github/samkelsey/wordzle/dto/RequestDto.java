@@ -5,20 +5,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestDto {
 
-    @NotNull(message = "red is a mandatory field.")
-    private Integer red;
+    @Valid
+    @NotNull(message = "colour1 is a mandatory field.")
+    @JsonProperty("colour-1")
+    private RGB colour1;
 
-    @NotNull(message = "green is a mandatory field.")
-    private Integer green;
-
-    @NotNull(message = "blue is a mandatory field.")
-    private Integer blue;
+    @Valid
+    @NotNull(message = "colour2 is a mandatory field.")
+    @JsonProperty("colour-2")
+    private RGB colour2;
 
 }

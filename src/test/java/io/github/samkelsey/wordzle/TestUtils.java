@@ -2,7 +2,7 @@ package io.github.samkelsey.wordzle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flextrade.jfixture.JFixture;
-import io.github.samkelsey.wordzle.dto.ResponseDto;
+import io.github.samkelsey.wordzle.dto.RGB;
 import io.github.samkelsey.wordzle.model.Guess;
 import io.github.samkelsey.wordzle.model.UserData;
 import io.github.samkelsey.wordzle.dto.RequestDto;
@@ -32,7 +32,10 @@ public class TestUtils {
     }
 
     public static RequestDto createSampleRequestDto() {
-        return new RequestDto(0, 0, 0);
+        return new RequestDto(
+                new RGB(0, 0, 0),
+                new RGB(0, 0, 0)
+        );
     }
 
     public static String asJsonString(final Object obj) {
@@ -42,5 +45,9 @@ public class TestUtils {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static RGB colorToRGB(Color color) {
+        return new RGB(color.getRed(), color.getGreen(), color.getBlue());
     }
 }

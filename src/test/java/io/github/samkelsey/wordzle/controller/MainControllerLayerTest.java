@@ -39,7 +39,7 @@ public class MainControllerLayerTest {
         when(guessService.makeGuess(any(), any())).thenReturn(TestUtils.jFixture.create(ResponseDto.class));
         MvcResult response = mockMvc.perform(
                 post("/submitGuess")
-                        .content(TestUtils.asJsonString(new RequestDto(1, 2, 3)))
+                        .content(TestUtils.asJsonString(TestUtils.createSampleRequestDto()))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
 

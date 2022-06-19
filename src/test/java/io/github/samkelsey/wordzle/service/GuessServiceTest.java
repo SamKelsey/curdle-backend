@@ -1,5 +1,6 @@
 package io.github.samkelsey.wordzle.service;
 
+import io.github.samkelsey.wordzle.dto.RGB;
 import io.github.samkelsey.wordzle.model.GameStatus;
 import io.github.samkelsey.wordzle.TestUtils;
 import io.github.samkelsey.wordzle.model.Guess;
@@ -18,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static io.github.samkelsey.wordzle.model.GameStatus.LOST;
@@ -52,7 +52,7 @@ public class GuessServiceTest {
 
     @Test
     void whenCorrectGuess_shouldGameOver() {
-        when(resetTargetWordTask.getTargetColour()).thenReturn(new Color(dto.getRed(), dto.getGreen(), dto.getGreen()));
+        when(resetTargetWordTask.getTargetColour()).thenReturn(new Color(dto.getColour1().getRed(), dto.getColour1().getGreen(), dto.getColour1().getBlue()));
 
         ResponseDto responseDto = guessService.makeGuess(userData, dto);
 
@@ -61,7 +61,7 @@ public class GuessServiceTest {
 
     @Test
     void whenMakeGuess_shouldDeductLife() {
-        when(resetTargetWordTask.getTargetColour()).thenReturn(new Color(dto.getRed(), dto.getGreen(), dto.getGreen()));
+        when(resetTargetWordTask.getTargetColour()).thenReturn(new Color(dto.getColour1().getRed(), dto.getColour1().getGreen(), dto.getColour1().getBlue()));
         int initialLives = userData.getLives();
 
         int lives = guessService.makeGuess(userData, dto).getLives();
@@ -71,30 +71,35 @@ public class GuessServiceTest {
 
     @Test
     void whenMakeGuess_shouldEvaluateGuess() {
-        RequestDto dto = new RequestDto(245, 250, 255);
+        RequestDto dto = new RequestDto(
+                new RGB(245, 250, 255),
+                new RGB(245, 250, 255)
+        );
         when(resetTargetWordTask.getTargetColour()).thenReturn(new Color(255, 255, 255));
 
         List<Guess> guesses = guessService.makeGuess(userData, dto).getGuesses();
 
         Guess result = guesses.get(guesses.size() - 1);
         Guess expected = new Guess(
-                new Color(245, 250, 255),
+                new RGB(245, 250, 255),
+                new RGB(245, 250, 255),
+                new RGB(245, 250, 255),
                 98
         );
-        assertEquals(expected.getGuess(), result.getGuess());
+        assertEquals(expected.getGuess().getRed(), result.getGuess().getRed());
+        assertEquals(expected.getGuess().getGreen(), result.getGuess().getGreen());
+        assertEquals(expected.getGuess().getBlue(), result.getGuess().getBlue());
         assertEquals(expected.getAccuracy(), result.getAccuracy());
     }
 
     @Test
     void whenMakeGuess_shouldAddGuess() {
-        Color guessColor = new Color(dto.getRed(), dto.getGreen(), dto.getBlue());
-        when(resetTargetWordTask.getTargetColour()).thenReturn(guessColor);
+        when(resetTargetWordTask.getTargetColour()).thenReturn(TestUtils.jFixture.create(Color.class));
         List<Guess> initialGuesses = new ArrayList<>(userData.getGuesses());
 
         List<Guess> guesses = guessService.makeGuess(userData, dto).getGuesses();
 
         assertEquals(initialGuesses.size() + 1, guesses.size());
-        assertEquals(guessColor, guesses.get(guesses.size() - 1).getGuess());
     }
 
     @Test
