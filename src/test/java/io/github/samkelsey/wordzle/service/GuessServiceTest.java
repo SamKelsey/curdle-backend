@@ -1,12 +1,12 @@
 package io.github.samkelsey.wordzle.service;
 
-import io.github.samkelsey.wordzle.dto.RGB;
-import io.github.samkelsey.wordzle.model.GameStatus;
 import io.github.samkelsey.wordzle.TestUtils;
-import io.github.samkelsey.wordzle.model.Guess;
-import io.github.samkelsey.wordzle.model.UserData;
+import io.github.samkelsey.wordzle.dto.RGB;
 import io.github.samkelsey.wordzle.dto.RequestDto;
 import io.github.samkelsey.wordzle.dto.ResponseDto;
+import io.github.samkelsey.wordzle.model.GameStatus;
+import io.github.samkelsey.wordzle.model.Guess;
+import io.github.samkelsey.wordzle.model.UserData;
 import io.github.samkelsey.wordzle.schedule.ResetTargetColourTask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,12 +24,7 @@ import java.util.List;
 import static io.github.samkelsey.wordzle.model.GameStatus.LOST;
 import static io.github.samkelsey.wordzle.model.GameStatus.WON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -115,6 +110,7 @@ public class GuessServiceTest {
     @ParameterizedTest
     @EnumSource(value = GameStatus.class, names = {"WON", "LOST"})
     void whenGameOver_shouldReturnOnlyUserData(GameStatus gameStatus) {
+        when(resetTargetWordTask.getTargetColour()).thenReturn(TestUtils.jFixture.create(Color.class));
         userData.setGameStatus(gameStatus);
 
         ResponseDto response = guessService.makeGuess(userData, dto);

@@ -33,7 +33,7 @@ public class MainController {
     @GetMapping("/getStats")
     public ResponseEntity<ResponseDto> getStats(HttpServletRequest request) {
         UserData userData = getUserData(request);
-        return ResponseEntity.ok().body(new ResponseDto(userData));
+        return ResponseEntity.ok().body(new ResponseDto(userData, resetTargetColourTask.getTargetColour()));
     }
 
     @PostMapping(value = "/submitGuess")

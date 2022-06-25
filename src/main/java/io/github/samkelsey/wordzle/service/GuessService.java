@@ -1,10 +1,10 @@
 package io.github.samkelsey.wordzle.service;
 
 import io.github.samkelsey.wordzle.dto.RGB;
-import io.github.samkelsey.wordzle.model.Guess;
-import io.github.samkelsey.wordzle.model.UserData;
 import io.github.samkelsey.wordzle.dto.RequestDto;
 import io.github.samkelsey.wordzle.dto.ResponseDto;
+import io.github.samkelsey.wordzle.model.Guess;
+import io.github.samkelsey.wordzle.model.UserData;
 import io.github.samkelsey.wordzle.schedule.ResetTargetColourTask;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class GuessService {
     public ResponseDto makeGuess(UserData userData, RequestDto dto) {
 
         if (isGameOver(userData)) {
-            return new ResponseDto(userData);
+            return new ResponseDto(userData, resetTargetColourTask.getTargetColour());
         }
 
         Guess guessResult = evaluateGuess(dto);
@@ -34,7 +34,8 @@ public class GuessService {
 
         return new ResponseDto(
                 isCorrectGuess(guessResult),
-                userData
+                userData,
+                resetTargetColourTask.getTargetColour()
         );
     }
 

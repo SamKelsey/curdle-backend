@@ -1,8 +1,10 @@
 package io.github.samkelsey.wordzle.controller;
 
+import io.github.samkelsey.wordzle.TestUtils;
 import io.github.samkelsey.wordzle.dto.ResponseDto;
 import io.github.samkelsey.wordzle.schedule.ResetTargetColourTask;
 import io.github.samkelsey.wordzle.service.GuessService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.awt.*;
 
 import static io.github.samkelsey.wordzle.model.GameStatus.PLAYING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,6 +37,11 @@ public class MainControllerTest {
 
     @InjectMocks
     private MainController mainController;
+
+    @BeforeEach
+    void init() {
+        when(resetTargetWordTask.getTargetColour()).thenReturn(TestUtils.jFixture.create(Color.class));
+    }
 
     @Test
     void whenTargetWordResets_sessionShouldBeInvalidated() {
