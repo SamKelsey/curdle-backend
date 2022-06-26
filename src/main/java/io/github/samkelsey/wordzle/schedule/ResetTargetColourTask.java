@@ -27,11 +27,14 @@ public class ResetTargetColourTask {
     }
 
     private Color createRandColour() {
-        int r = rand.nextInt(255);
-        int g = rand.nextInt(255);
-        int b = rand.nextInt(255);
+        int minBound = 30;
+        int maxBound = 225;
 
-        return new Color(200, 200, 200);
+        int r = rand.nextInt(maxBound - minBound) + minBound;
+        int g = rand.nextInt(maxBound - minBound) + minBound;
+        int b = rand.nextInt(maxBound - minBound) + minBound;
+
+        return new Color(r, g, b);
     }
 
     public Color getTargetColour() {
