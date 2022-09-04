@@ -1,0 +1,26 @@
+name: Push Image to Registry
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag for deployed image."
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Docker login
+        env:
+          DOCKER_USER: ${{secrets.DOCKER_USER}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: Build Dockerfile
+        run: docker build . -t ${{secrets.DOCKER_USER}}/curdle-backend:latest -t ${{secrets.DOCKER_USER}}/curdle-backend:${{github.event.inputs.tag}}
+      - name: Docker Push
+        run: docker push ${{secrets.DOCKER_USER}}/curdle-backend --all-tags
