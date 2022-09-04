@@ -11,5 +11,5 @@ RUN mvn -f /home/app/pom.xml clean package -DskipTests=true
 #
 FROM openjdk:11-jre-slim
 EXPOSE 8080
-COPY --from=build /home/app/target/wordzle-0.0.1-SNAPSHOT.jar /usr/local/lib/wordzle.jar
-ENTRYPOINT ["java","-jar","/usr/local/lib/wordzle.jar"]
+COPY --from=build /home/app/target/curdle-0.0.1-SNAPSHOT.jar /usr/local/lib/curdle.jar
+ENTRYPOINT ["java","-jar","/usr/local/lib/curdle.jar"]

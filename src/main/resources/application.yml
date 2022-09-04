@@ -6,4 +6,4 @@ spring:
     database: 0
     port: 6379
 reset-word-task:
-  delay: 300000
+  delay: 30000
